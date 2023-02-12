@@ -1,13 +1,13 @@
 package colinzhu.workflow.example.handler;
 
+import colinzhu.workflow.Event;
 import colinzhu.workflow.example.Payment;
 
 import java.util.function.BiFunction;
 
-public class PaymentSaveHandler implements BiFunction<Payment, Object, String> {
+public class PaymentSaveHandler implements BiFunction<Payment, Object, Event> {
     @Override
-    public String apply(Payment payment, Object o) {
-        payment.setStatus("SAVED");
-        return "SAVED";
+    public Event apply(Payment payment, Object request) {
+        return new Event("SAVED");
     }
 }

@@ -1,13 +1,13 @@
 package colinzhu.workflow.example.handler;
 
+import colinzhu.workflow.Event;
 import colinzhu.workflow.example.Payment;
 
 import java.util.function.BiFunction;
 
-public class PaymentCheckHandler implements BiFunction<Payment, Object, String> {
+public class PaymentCheckHandler implements BiFunction<Payment, Object, Event> {
     @Override
-    public String apply(Payment payment, Object o) {
-        payment.setStatus("BLOCKED");
-        return "BLOCKED";
+    public Event apply(Payment payment, Object request) {
+        return new Event("BLOCKED");
     }
 }
