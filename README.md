@@ -1,11 +1,19 @@
-# Workflow Engine
+# Event Driver Workflow Engine
 
 A design of workflow engine
 
+### Feature
+When an event is received, the corresponding handled will be invoked to handle the event, after handling, a new event will be generated.
+
+If the new event is not linked with any handler, the process will stop.
+
+### Rules
+The rules are defined in a list of Event Name and Handler mapping
+
 ### Example Rules
 ```
-IF...............................THEN....................................................................
-event                   handlerClassName                                           outputEvent
+IF......................THEN....................................................................
+eventName               handlerClassName                                           outputEvent
 RECEIVED                colinzhu.workflow.example.handler.PaymentSaveHandler       SAVED
 SAVED                   colinzhu.workflow.example.handler.PaymentCheckHandler      BLOCKED, RELEASED
 RQST_RECEIVED_EXP_CLEAR	colinzhu.workflow.example.handler.PaymentClearExpHandler   BLOCKED, RELEASED
