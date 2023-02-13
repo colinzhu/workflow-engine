@@ -3,12 +3,14 @@ package colinzhu.workflow;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+@Slf4j
 public class WorkflowEngine<T> {
     ObjectMapper objectMapper = new ObjectMapper();
     private final List<Rule<T>> rules;
@@ -19,7 +21,7 @@ public class WorkflowEngine<T> {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(rules.size());
+        log.info("Number of rules: " + rules.size());
         for (Rule<T> rule : rules) {
             try {
                 String className = rule.getHandlerClassName();
@@ -33,16 +35,16 @@ public class WorkflowEngine<T> {
     }
 
     public void process(Event event, T processable) {
-        Optional<Rule<T>> optionalRule = rules.stream().filter(rule -> event.getName().equals(rule.getEvent())).findFirst();
-        Event nextEvent = null;
+        Optional<Rule<T>> optionalRule = rules.stream().filter(rule -> event.getName().equals(rule.getEventName())).findFirst();
+        Event nextEvent;
         if (optionalRule.isPresent()) {
             BiFunction<T, Object, Event> handler = optionalRule.get().getHandler();
-            System.out.println("Rule found for event: " + event + " handler: " + handler);
+            log.info("Rule found for event: " + event + " handler: " + handler);
             nextEvent = handler.apply(processable, event.getRequest());
-            System.out.println("Next event: " + nextEvent);
+            log.info("Next event: " + nextEvent);
             process(nextEvent, processable);
         } else {
-            System.out.println("No rule found for event: " + event);
+            log.info("No rule found for event: " + event);
         }
 
     }
